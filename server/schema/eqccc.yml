@@ -1,0 +1,107 @@
+--- 
+apiVersion: "1.0.0"
+info:
+  version: "0.0.0"
+  title: Test API
+apis: 
+  - 
+    path: "/ccc/{timePeriod}/{customer}/{cage}/{cabinet}"
+    operations: 
+      - 
+        httpMethod: GET
+        nickname: getCCC
+        notes: "We haven't yet parameterized the Data Center or Begin and End Times"
+        parameters: 
+          - 
+            allowMultiple: false
+            description: "'daily' or 'hourly' for now."
+            name: timePeriod
+            paramType: path
+            required: true
+            type: string
+          - 
+            allowMultiple: false
+            description: "The ID for a specific Customer"
+            name: customer
+            paramType: path
+            required: true
+            type: string
+          - 
+            allowMultiple: false
+            description: "the Cage ID"
+            name: cage
+            paramType: path
+            required: true
+            type: string
+          - 
+            allowMultiple: false
+            description: "the Cabinet ID"
+            name: cabinet
+            paramType: path
+            required: true
+            type: string
+        produces: 
+          - application/json
+          - application/xml
+        responseMessages: 
+          - 
+            code: 400
+            message: "Invalid ID supplied"
+        summary: "Find Customer / Cage / Cabinet measurements for a Time Period"
+        type: CCC
+  - 
+    path: "/ccc"
+    operations: 
+      - 
+        httpMethod: GET
+        nickname: getAll
+        notes: "We haven't yet parameterized the Data Center or Begin and End Times"
+        produces: 
+          - application/json
+          - application/xml
+        responseMessages: 
+          - 
+            code: 400
+            message: "Invalid ID supplied"
+        summary: "Find ALL Customer / Cage / Cabinet measurements"
+        type: CCC
+      - 
+        httpMethod: DELETE
+        nickname: deleteByID
+        notes: "We haven't yet parameterized the Data Center or Begin and End Times"
+        produces: 
+          - application/json
+          - application/xml
+        responseMessages: 
+          - 
+            code: 400
+            message: "Invalid ID supplied"
+        summary: "Remove Customer / Cage / Cabinet measurements by ID"
+        type: CCC
+basePath: "http://localhost:8002/api"
+models: 
+  Measurment: 
+    id: Measurment
+    adapter: mongo
+    connection : mongo
+    properties: 
+      name: 
+        type: string
+  CCC: 
+    id: CCC
+    adapter: mongo
+    connection : mongo
+    properties: 
+      aggregatedCount: 
+        type: string
+      rawCount: 
+        type: string
+      tags: 
+        items: 
+          $ref: Measurment
+        type: array
+produces: 
+  - application/json
+  - application/xml
+resourcePath: /ccc
+swaggerVersion: "1.2"

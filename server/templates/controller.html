@@ -1,0 +1,27 @@
+var dirPaths = require(process.cwd() + '/server/config/dirPaths');
+{%- for modelName in modelNames -%}
+    var {{modelName }} = require(dirPaths.modelsDir+'{{modelName}}');
+{%- endfor -%}
+
+var {{ controllerName }} = {
+
+{%- for apiMethod in apiMethods -%}
+    {%- for operation in apiMethod.operations -%}
+
+        {{ operation.nickname }}: function (req, res) {
+        var html = '{{ operation.httpMethod }} : {{ operation.summary}} ' ;
+        res.send(html);  
+        }
+        {%- if loop.length >1 and !loop.last -%}
+             ,
+        {%- endif -%}
+
+    {%- endfor -%}
+    {%- if loop.length >1 and !loop.last -%}
+         ,
+    {%- endif -%}
+{%- endfor -%}
+
+}
+module.exports = {{ controllerName }};
+
