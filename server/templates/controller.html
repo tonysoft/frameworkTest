@@ -1,7 +1,11 @@
-var dirPaths = require(process.cwd() + '/server/config/dirPaths');
-{%- for modelName in modelNames -%}
-    var {{modelName }} = require(dirPaths.modelsDir+'{{modelName}}');
-{%- endfor -%}
+var thisAPImpl = null;
+try {
+  thisAPImpl = require("../implementation/{{ controller }}");
+}
+catch (e) {
+  // No implementation has been provided yet..
+  // But that's OK because each end-point defined below will remind us...
+}
 
 var {{ controllerName }} = {
 
@@ -9,8 +13,15 @@ var {{ controllerName }} = {
     {%- for operation in apiMethod.operations -%}
 
         {{ operation.nickname }}: function (req, res) {
-        var html = '{{ operation.httpMethod }} : {{ operation.summary}} ' ;
-        res.send(html);  
+            try {
+              return thisAPImpl.{{ operation.nickname }}(req, res);
+            } catch(e) {
+                var html = '{{ operation.httpMethod }} : {{ operation.summary}} <br/><br/>' ;
+                html += 'exports.<b>.{{ operation.nickname }}</b>.(req, res) {...}<br/><br/>';
+                html += 'should be exposed from within <b>server/implementation/{{ controller }}.js</b><br/><br/>';
+                html += 'you can access <b>app.models[...]</b> to manipulate your data...';
+                res.send(html);  
+            }
         }
         {%- if loop.length >1 and !loop.last -%}
              ,

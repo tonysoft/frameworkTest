@@ -209,6 +209,7 @@ var genControllers = function (ymlFileList, serverDir, done) {
 
                             //operations: yamlDoc.apis[0].operations,
                         var controllerContents = controllerTemplate({
+                            controller: fileName,
                             controllerName: controllerName,
                             apiMethods: yamlDoc.apis,
                             modelNames: Object.keys(yamlDoc.models)
@@ -218,6 +219,16 @@ var genControllers = function (ymlFileList, serverDir, done) {
                         var controllerDirectory = serverDir + 'controllers';
                         if (!fs.existsSync(controllerDirectory)) {
                             fs.mkdir(controllerDirectory);
+                        }
+
+                        var implementationDirectory = serverDir + 'implementation';
+                        if (!fs.existsSync(implementationDirectory)) {
+                            fs.mkdir(implementationDirectory);
+                        }
+
+                        var implementationFile = serverDir + 'implementation/' + fileName + ".js";
+                        if (!fs.existsSync(implementationFile)) {
+                            fs.writeFile(implementationFile, 'exports.ping = function() { console.log("' + fileName + ' controller implementation methods go in this module...")};');
                         }
 
                         fs.writeFile(controllerDirectory + '/' + controllerName + '.js', beautify(controllerContents, { indent_size: 2 }), function (err) {
